@@ -1,3 +1,38 @@
+
+
+class NodeStorage(object):
+    """
+    This class should store array of element of same label
+    """
+
+    def __init__(self):
+        pass
+
+    def add_element(self, element):
+        pass
+
+    def get_nearest(self, element, n):
+        pass
+
+    def get_min_distance(self, element, n):
+        pass
+
+
+class PlainNodeStorage(NodeStorage):
+
+    def __init__(self):
+        super().__init__()
+        self.data = []
+
+    def add_element(self, element):
+        self.data.append(element)
+
+    def get_nearest(self, element, n):
+        pass
+
+
+
+
 class Node:
     """
     This class represents node of SkNN graph.
