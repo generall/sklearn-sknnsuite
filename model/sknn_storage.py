@@ -1,3 +1,4 @@
+from .fixed_length_pqueue import FixedLengthPQueue
 
 
 class NodeStorage(object):
@@ -20,17 +21,35 @@ class NodeStorage(object):
 
 class PlainNodeStorage(NodeStorage):
 
-    def __init__(self):
+    def __init__(self, distance_function):
         super().__init__()
         self.data = []
+        self.distance_function = distance_function
 
     def add_element(self, element):
         self.data.append(element)
 
     def get_nearest(self, element, n):
-        pass
+        queue = FixedLengthPQueue(n)
+
+        for stored_element in self.data:
+            dist = self.distance_function(stored_element, element)
+            queue.add_task(stored_element, dist)
+
+        return [(-e[0], e[2]) for e in queue.entry_finder.values()]
 
 
+class PlainAverageStorage(PlainNodeStorage):
+
+    def __init__(self, distance_function):
+        super().__init__(distance_function)
+
+    def get_min_distance(self, element, n):
+        nearest = self.get_nearest(element, n)
+        sum_distance = 0
+        for x in nearest:
+            sum_distance += x[0]
+        return sum_distance / n
 
 
 class Node:
