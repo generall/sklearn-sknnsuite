@@ -1,6 +1,7 @@
 from model.sknn_storage import NodeFactory
 from model.sknn_storage import PlainAverageStorageFactory
 
+
 class Model:
     INIT_LABEL = "seq-init"
     END_LABEL = "seq-end"
@@ -14,8 +15,19 @@ class Model:
             Model.END_LABEL: self.end_node,
         }
 
+    def get_or_create_node(self, label):
+        if label not in self.nodes:
+            self.nodes[label] = self.node_factory.create(label)
+        return self.nodes[label]
+
     def process_sequence(self, sequence):
         """
         Process sequence, put each element to the appropriate node
         """
-        pass
+        current_node = self.init_node
+        for element in sequence:
+            element_label = element.label
+            next_node = self.get_or_create_node(element_label)
+            current_node.add_element(element, element_label)
+            current_node.add_link(next_node)
+        current_node.add_link(self.end_node)
