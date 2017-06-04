@@ -59,8 +59,43 @@ class Node:
     It should store all elements which follows right after element with state = label in all sequences.
     """
 
-    def __init__(self, label):
+    def __init__(self, label, k):
         self.label = label
+        self.forward_map = {}
+        self.backward_map = {}
+        self.storage = {}
+        self.k = k
+
+    def calc_distances(self, element):
+        res = {}
+        for label, s in self.storage:
+            res[self.forward_map[label]] = s.get_min_distance(element, self.k)
+        return res
+
+    def calc_distance(self, element, node):
+        if node.label in self.storage:
+            return self.storage[node.label].get_min_distance(element, self.k)
+        else:
+            return float("inf")
+
+    def add_element(self, element, label):
+        if label not in self.storage:
+            self.storage[label] = []
+        self.storage[label].append(element)
+
+    def add_link(self, other):
+        self.forward_map[other.label] = other
+        other.add_back_link(self)
+
+    def add_back_link(self, other):
+        self.backward_map[other.label] = other
+
+    def has_link(self, label):
+        return label in self.forward_map
+
+
+
+
 
 
 class NodeFactory:
