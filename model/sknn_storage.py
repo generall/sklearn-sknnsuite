@@ -52,6 +52,15 @@ class PlainAverageStorage(PlainNodeStorage):
         return sum_distance / n
 
 
+class PlainAverageStorageFactory:
+
+    def __init__(self, distance_function):
+        self.distance_function = distance_function
+
+    def create(self):
+        return PlainAverageStorage(self.distance_function)
+
+
 class Node:
     """
     This class represents node of SkNN graph.
@@ -59,12 +68,13 @@ class Node:
     It should store all elements which follows right after element with state = label in all sequences.
     """
 
-    def __init__(self, label, k):
+    def __init__(self, label, k, storage_factory):
         self.label = label
         self.forward_map = {}
         self.backward_map = {}
         self.storage = {}
         self.k = k
+        self.storage_factory = storage_factory
 
     def calc_distances(self, element):
         res = {}
@@ -80,7 +90,7 @@ class Node:
 
     def add_element(self, element, label):
         if label not in self.storage:
-            self.storage[label] = []
+            self.storage[label] = self.storage_factory.create()
         self.storage[label].append(element)
 
     def add_link(self, other):
@@ -94,16 +104,14 @@ class Node:
         return label in self.forward_map
 
 
-
-
-
-
 class NodeFactory:
     """
     This class should work as interface for for creating Node instances.
     Since Node may depends on distance function - it is necessary to allow external definition of this class
     """
+    def __init__(self, k, storage_factory):
+        self.k = k
+        self.storage_factory = storage_factory
 
-    @staticmethod
-    def create(label):
-        return Node(label)
+    def create(self, label):
+        return Node(label, self.k, self.storage_factory)
