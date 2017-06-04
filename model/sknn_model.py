@@ -30,4 +30,5 @@ class Model:
             next_node = self.get_or_create_node(element_label)
             current_node.add_element(element, element_label)
             current_node.add_link(next_node)
+            current_node = next_node
         current_node.add_link(self.end_node)

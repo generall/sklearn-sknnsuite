@@ -18,7 +18,7 @@ class SkNN:
             current_distances = defaultdict(lambda: float('inf'))
             current_path = {}
 
-            for node, dist in prev:
+            for node, dist in prev.items():
                 if dist != float('inf'):
                     outgoing_nodes = node.forward_map.values()
                     for next_node in outgoing_nodes:
@@ -37,3 +37,19 @@ class SkNN:
                 v[-1][node] = float('inf')
 
         return v, path
+
+    @staticmethod
+    def extract_path(v, path):
+        node, score = min(v[-1].items(), key=lambda x: x[1])
+        del v[-1][node]
+        res = []
+        for p_map in reversed(path):
+            res.append(node)
+            node = p_map[node]
+        return list(reversed(res)), score
+
+    def tag(self, sequence):
+        v, path = self.viterbi(sequence)
+        if len(v[-1]) > 0:
+            return SkNN.extract_path(v, path)
+        return None, None

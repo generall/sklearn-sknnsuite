@@ -91,7 +91,7 @@ class Node:
     def add_element(self, element, label):
         if label not in self.storage:
             self.storage[label] = self.storage_factory.create()
-        self.storage[label].append(element)
+        self.storage[label].add_element(element)
 
     def add_link(self, other):
         self.forward_map[other.label] = other
