@@ -2,8 +2,13 @@ from unittest import TestCase
 from collections import namedtuple
 from model.sknn_model import Model
 from sknn_tagger import SkNN
+import pickle
 
 Element = namedtuple('Element', ['label', 'data'])
+
+
+def dist_foo(x, y):
+    return abs(x.data - y.data)
 
 
 class TestSkNN(TestCase):
@@ -13,7 +18,8 @@ class TestSkNN(TestCase):
         return Element(label=label, data=data)
 
     def test_tag(self):
-        m = Model(1, lambda x, y: abs(x.data - y.data))
+
+        m = Model(1, dist_foo)
 
         seq1 = [
             TestSkNN.create_element("l1", 1),
@@ -68,6 +74,10 @@ class TestSkNN(TestCase):
 
         res1, score1 = tagger.tag(test1)
         res2, score2 = tagger.tag(test2)
+
+        s = pickle.dumps(tagger)
+        tagger = pickle.loads(s)
+
         res3, score3 = tagger.tag(test3)
 
         self.assertEqual(res3, None)
