@@ -8,6 +8,13 @@ class SkNN:
         self.model = model
 
     def viterbi(self, sequence):
+        """
+        This function returns coast matrix V.
+        V[i][j] coast of transition to node [j] on i-th element
+        path[i][j] - source node
+        :param sequence:
+        :return: V, path - matrix of minimal transitions
+        """
         v = [defaultdict(lambda: float('inf'))]
         path = []
         v[-1][self.model.init_node] = 0.0
@@ -40,6 +47,12 @@ class SkNN:
 
     @staticmethod
     def extract_path(v, path):
+        """
+        This function finds path in result of Viterbi algorithm
+        :param v: V[i][j] coast of transition to node [j] on i-th element
+        :param path: path[i][j] - source node
+        :return: (list of nodes, score)
+        """
         node, score = min(v[-1].items(), key=lambda x: x[1])
         del v[-1][node]
         res = []

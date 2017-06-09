@@ -40,6 +40,9 @@ class PlainNodeStorage(NodeStorage):
 
 
 class PlainAverageStorage(PlainNodeStorage):
+    """
+    This class implements storage which has function to find average distance among n nearest elements
+    """
 
     def __init__(self, distance_function):
         super().__init__(distance_function)

@@ -14,7 +14,7 @@ class TestSkNN(TestCase):
 
     def test_tag(self):
         m = Model(1, lambda x, y: abs(x.data - y.data))
-        
+
         seq1 = [
             TestSkNN.create_element("l1", 1),
             TestSkNN.create_element("l2", 100),
@@ -84,3 +84,21 @@ class TestSkNN(TestCase):
         self.assertEqual(res2[1].label, "l4")
         self.assertEqual(res2[2].label, "l5")
         self.assertEqual(res2[3].label, "l5")
+
+    def test_extract_path(self):
+        v = [
+            {'init': 0.0},
+            {'a': 1, 'b': 2, 'c': 3},
+            {'e': 2, 'g': 3, 'k': 3},
+            {'r': 5, 'd': 6, 't': 4},
+        ]
+        path = [
+            {'a': 'init', 'b': 'init', 'c': 'init'},
+            {'e': 'a', 'g': 'b', 'k': 'c'},
+            {'r': 'e', 'd': 'g', 't': 'k'}
+        ]
+
+        lst, score = SkNN.extract_path(v, path)
+
+        self.assertEqual(['c', 'k', 't'], lst)
+        self.assertEqual(score, 4)
