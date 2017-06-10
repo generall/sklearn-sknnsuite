@@ -4,8 +4,15 @@ from model.sknn_model import Model
 from sknn_tagger import SkNN
 from collections import namedtuple
 
+import itertools
+
 
 class SkNNSuite:
+    def unwrap_distance_function_call(self, x, y):
+        """
+        This function unwrap data from Element structure for user-defined distance function call
+        """
+        return self.distance_function(x.data, y.data)
 
     def __init__(self, distance_function, k=1, node_factory=NodeFactory, storage_factory=PlainAverageStorageFactory):
         """
@@ -18,7 +25,10 @@ class SkNNSuite:
         self.Element = namedtuple('Element', ['label', 'data'])
         self.distance_function = distance_function
         self.k = k
-        self.model = Model(k, distance_function, node_factory=node_factory, storage_factory=storage_factory)
+        self.model = Model(k,
+                           self.unwrap_distance_function_call,
+                           node_factory=node_factory,
+                           storage_factory=storage_factory)
 
     def convert_sequence(self, seq, labels):
         res = []
@@ -47,6 +57,9 @@ class SkNNSuite:
         result = []
         tagger = SkNN(self.model)
         for x_target in x_targets:
-            res, score = tagger.tag(x_target)
-            result.append(res)
+            res, score = tagger.tag(self.convert_sequence(x_target, itertools.repeat(None)))
+            if res:
+                result.append(list(map(lambda x: x.label, res)))
+            else:
+                result.append(None) # could not do anything, distances are infinite
         return result
