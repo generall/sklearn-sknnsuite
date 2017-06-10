@@ -44,6 +44,7 @@ self.assertEqual(None, prediction[2])
 
 # References
 
+* SkNN short description [wiki](https://en.wikipedia.org/wiki/Structured_kNN)
 * SkNN detailed [description](https://arxiv.org/abs/1610.04718)
 * Named Entity Linking with SkNN - [https://github.com/generall/SkNN-NER](https://github.com/generall/SkNN-NER)
 * Ruby implementation of SkNN [https://github.com/generall/SkNN-ruby](https://github.com/generall/SkNN-ruby)
